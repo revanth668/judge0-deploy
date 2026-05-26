@@ -1,11 +1,14 @@
 services:
+  - type: redis
+    name: judge0-redis
+    plan: free
+    ipAllowList: []
+
   - type: web
     name: judge0-server
     env: docker
     image:
       url: docker.io/judge0/judge0:1.13.0
-    plan: free
-    healthCheckPath: /system_info
     envVars:
       - key: REDIS_URL
         fromService:
@@ -30,17 +33,13 @@ services:
         value: "true"
       - key: MAX_QUEUE_SIZE
         value: "100"
-      - key: AUTHN_HEADER
-        value: ""
-      - key: AUTHN_TOKEN
-        value: ""
 
   - type: worker
     name: judge0-workers
     env: docker
     image:
       url: docker.io/judge0/judge0:1.13.0
-    plan: free
+    startCommand: ./scripts/workers
     envVars:
       - key: REDIS_URL
         fromService:
@@ -61,14 +60,9 @@ services:
         value: "5"
       - key: MAX_MEMORY_LIMIT
         value: "512000"
-      - key: AUTHN_HEADER
-        value: ""
-      - key: AUTHN_TOKEN
-        value: ""
 
 databases:
   - name: judge0-db
     plan: free
     databaseName: judge0
     user: judge0
-
