@@ -41,7 +41,6 @@ services:
     image:
       url: docker.io/judge0/judge0:1.13.0
     plan: free
-    startCommand: ./scripts/workers
     envVars:
       - key: REDIS_URL
         fromService:
