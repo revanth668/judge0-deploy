@@ -39,7 +39,7 @@ services:
     env: docker
     image:
       url: docker.io/judge0/judge0:1.13.0
-    startCommand: ./scripts/workers
+    dockerCommand: ./scripts/workers
     envVars:
       - key: REDIS_URL
         fromService:
