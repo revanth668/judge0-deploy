@@ -7,8 +7,7 @@ services:
   - type: web
     name: judge0-server
     env: docker
-    image:
-      url: docker.io/judge0/judge0:1.13.0
+    dockerfilePath: ./Dockerfile.server
     envVars:
       - key: REDIS_URL
         fromService:
@@ -61,6 +60,5 @@ services:
 
 databases:
   - name: judge0-db
-    plan: free
     databaseName: judge0
     user: judge0
