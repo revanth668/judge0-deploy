@@ -1,0 +1,63 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  judge0-db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: judge0
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: judge0pass
+    volumes:
+      - judge0pgdata:/var/lib/postgresql/data
+
+  judge0-server:
+    image: judge0/judge0:1.13.1
+    restart: unless-stopped
+    ports:
+      - '2358:2358'
+    privileged: true
+    depends_on:
+      - redis
+      - judge0-db
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_HOST: judge0-db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: judge0
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: judge0pass
+      SECRET_KEY_BASE: changeme_replace_with_64_char_hex
+      RAILS_ENV: production
+      WORKERS_MAX_QUEUE_SIZE: 100
+      WORKER_POLLING_FREQUENCY: 1000
+      MAX_CPU_TIME_LIMIT: 5
+      MAX_MEMORY_LIMIT: 512000
+      ENABLE_WAIT_RESULT: "true"
+      MAX_QUEUE_SIZE: 100
+
+  judge0-workers:
+    image: judge0/judge0:1.13.1
+    restart: unless-stopped
+    command: ['./scripts/workers']
+    privileged: true
+    depends_on:
+      - judge0-server
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_HOST: judge0-db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: judge0
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: judge0pass
+      SECRET_KEY_BASE: changeme_replace_with_64_char_hex
+      RAILS_ENV: production
+      WORKERS_MAX_QUEUE_SIZE: 100
+      WORKER_POLLING_FREQUENCY: 1000
+      MAX_CPU_TIME_LIMIT: 5
+      MAX_MEMORY_LIMIT: 512000
+
+volumes:
+  judge0pgdata:
