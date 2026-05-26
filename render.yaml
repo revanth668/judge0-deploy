@@ -73,7 +73,3 @@ databases:
     databaseName: judge0
     user: judge0
 
-  - type: redis
-    name: judge0-redis
-    plan: free
-    ipAllowList: []
