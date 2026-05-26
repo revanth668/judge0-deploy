@@ -1,0 +1,2 @@
+FROM judge0/judge0:1.13.0
+CMD ["./scripts/workers"]

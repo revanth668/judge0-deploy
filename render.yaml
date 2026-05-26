@@ -37,9 +37,7 @@ services:
   - type: worker
     name: judge0-workers
     env: docker
-    image:
-      url: docker.io/judge0/judge0:1.13.0
-    dockerCommand: ./scripts/workers
+    dockerfilePath: ./Dockerfile.workers
     envVars:
       - key: REDIS_URL
         fromService:
